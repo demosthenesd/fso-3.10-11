@@ -14,6 +14,10 @@ app.use(cors());
 
 morgan.token('type', function (req, res) { return req.headers['content-type'] })            
 
+app.use(express.static('dist'))
+
+
+
 let persons = [
     {
         "id": "1",
