@@ -15,6 +15,8 @@ app.use(express.json())
 app.use(morgan(':method :url :status  :response-time ms   :body'))
 
 app.use(cors());
+app.use(express.static('dist'))
+
 
 morgan.token('type', function (req, res) { return req.headers['content-type'] })
 
