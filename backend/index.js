@@ -42,7 +42,7 @@ app.get("/api/info", async (req, res) => {
 
 app.get("/api/persons/:id", (req, res) => {
 
-    Person.findById(request.params.id).then(person => {
+    Person.findById(req.params.id).then(person => {
         response.json(person)
     })
 })
