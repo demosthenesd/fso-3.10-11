@@ -10,18 +10,18 @@ morgan.token('body', req => {
 })
 app.use(express.json())
 app.use(morgan(':method :url :status  :response-time ms   :body'))
-
 app.use(cors());
 app.use(express.static('dist'))
 
 
 const errorHandler = (error, request, response, next) => {
     console.error(error.message)
+
     if (error.name === 'CastError') {
         return response.status(400).send({ error: 'malformatted id' })
-    }
-    else {
-        console.log(error)
+
+    } else if (error.name === 'ValidationError') {
+        return response.status(400).json({ error: error.message })
     }
 
     next(error)
@@ -48,8 +48,6 @@ app.get("/api/info", async (req, res) => {
     res.send(htmlRes)
 })
 
-
-
 app.get("/api/persons/:id", (req, res, next) => {
 
     Person.findById(req.params.id).then(person => {
@@ -58,19 +56,11 @@ app.get("/api/persons/:id", (req, res, next) => {
 
 })
 
-
 app.delete("/api/persons/:id", (req, res, next) => {
     Person.deleteOne({ _id: req.params.id }).then(output =>
     res.json(output)).catch(error => next(error))
 })
 
-
-// const generateId = () => {
-//     const maxId = Person.length > 0
-//         ? Math.max(...Person.map(n => Number(n.id)))
-//         : 0
-//     return String(maxId + 1)
-// }
 app.post("/api/persons", (req, res) => {
     const newGuy = req.body;
 
@@ -111,13 +101,6 @@ app.put('/api/persons/:id', (request, response, next) => {
     })
     .catch(error => next(error))
 })
-
-
-
-
-
-
 app.use(errorHandler)
-
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => console.log("listening to port: ", PORT))
